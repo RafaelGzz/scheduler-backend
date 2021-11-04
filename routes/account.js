@@ -4,8 +4,8 @@ import { auth } from '../controllers/authController.js'
 
 const router = express.Router();
 
-router.route('/user').post(auth, AccountController.getUser);
+router.route('/').get(auth, AccountController.getUser);
 
-router.route('/user/edit').post(auth, AccountController.editUser);
+router.route('/edit').post(auth, AccountController.editUser);
 
 export default router;
