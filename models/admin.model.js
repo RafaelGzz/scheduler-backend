@@ -52,14 +52,14 @@ const adminSchema = new Schema(
 	}
 );
 
-userSchema.methods.encryptPassword = async (password) => {
+adminSchema.methods.encryptPassword = async (password) => {
 	return await bcrypt.hash(password, await bcrypt.genSalt(10));
 };
 
-userSchema.methods.comparePassword = async function (password) {
+adminSchema.methods.comparePassword = async function (password) {
 	return await bcrypt.compare(password, this.password);
 };
 
-const User = mongoose.model("User", userSchema);
+const Admin = mongoose.model("Admin", adminSchema);
 
-export default User;
+export default Admin;
