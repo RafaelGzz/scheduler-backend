@@ -3,7 +3,7 @@ import cors from 'cors';
 import { connect } from './includes/database.js';
 
 import authRouter from './routes/auth.js';
-import accountRouter from './routes/account.js';
+import accountRouter from './routes/admin.js';
 import tasksRouter from './routes/tasks.js';
 
 const app = express();
@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/user', authRouter);
-app.use('/api/account', accountRouter)
+app.use('/api/admin', accountRouter)
 app.use('/api/tasks', tasksRouter)
 // Database
 connect();
