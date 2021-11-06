@@ -1,5 +1,4 @@
 import response from "../includes/response.js";
-import Task from "../models/task.model.js";
 import Nurse from "../models/nurse.model.js";
 
 export const getNurse = async(req, res) => {
@@ -69,13 +68,3 @@ export const editNurse = async(req, res) => {
         res.send(new response({ status: "Error", message: "Cannot edit nurse", data: ex }))
     }
 };
-
-
-// export function valid(req, res, next) {
-//     const nurse = req.body;
-
-//     if (nurse.nurse_id == null) res.send(new response({ status: "Error", message: "Missing nurse_id", data: nurse }))
-//     else if (nurse.name == null) res.send(new response({ status: "Error", message: "Missing name", data: nurse }))
-//     else if (nurse.work_schedule == null) res.send(new response({ status: "Error", message: "Missing work_schedule", data: nurse }))
-//     else next();
-// };
