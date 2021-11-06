@@ -28,10 +28,7 @@ const nurseSchema = new Schema({
                 required: true
             }
         },
-        required: true,
-        default: {
-
-        }
+        required: true
     },
     work_hours: {
         type: {
