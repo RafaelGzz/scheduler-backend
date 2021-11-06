@@ -8,6 +8,8 @@ router.route('/').get(auth, PtoController.getPtos);
 
 router.route('/:id').get(PtoController.getPto);
 
+router.route('/all-by-nurse').post(PtoController.getPtosByNurse);
+
 router.route('/edit/:id').put(auth, PtoController.editPto);
 
 router.route('/add').post(PtoController.addPto);

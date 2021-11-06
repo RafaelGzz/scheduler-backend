@@ -30,6 +30,19 @@ export const getPtos = async (req, res) => {
 	}
 };
 
+export const getPtosByNurse = async (req, res) => {
+	try {
+		const ptos = await PTO.find({ nurse_id: req.body.nurse_id }).orFail();
+		res.send(
+			new response({
+				data: ptos
+			})
+		);
+	} catch (ex) {
+		res.send(new response({ status: ResponseStatus.ERROR, message: "No PTOs on database", data: ex }))
+	}
+};
+
 export const addPto = async (req, res) => {
 	try {
 		const { error } = ptoReigisterValidation(req.body);
