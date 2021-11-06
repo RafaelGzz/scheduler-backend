@@ -10,17 +10,11 @@ export const registerValidation = (data) => {
 	return schema.validate(data);
 };
 
-export const usernameValidation = (data) => {
+export const editValidation = (data) => {
 	const schema = Joi.object({
-		username: Joi.string().min(3).max(25).required(),
-	});
-
-	return schema.validate(data);
-};
-
-export const nameValidation = (data) => {
-	const schema = Joi.object({
-		name: Joi.string().min(3).max(50).required(),
+		username: Joi.string().min(3).max(25),
+		name: Joi.string().min(3).max(50),
+		password: Joi.string().min(6).max(255),
 	});
 
 	return schema.validate(data);
