@@ -1,7 +1,8 @@
 import {
-	registerValidation,
-	passwordValidation,
-	usernameValidation,
+	// registerValidation,
+	// passwordValidation,
+	// usernameValidation,
+	editValidation
 } from "../includes/validation.js";
 import response from "../includes/response.js";
 import Admin from "../models/admin.model.js";
@@ -29,38 +30,14 @@ export const getAdmin = async (req, res) => {
 
 export const editAdmin = async (req, res) => {
 	const data = req.body;
-
-	if (data.username && data.username != null) {
-		const { error } = usernameValidation({ username: data.username });
-		if (error)
-			return res.send(
-				new response({
-					status: ResponseStatus.ERROR,
-					message: error.details[0].message,
-				})
-			);
-	}
-
-	if (data.name && data.name != null) {
-		const { error } = nameValidation({ name: data.name });
-		if (error)
-			return res.send(
-				new response({
-					status: ResponseStatus.ERROR,
-					message: error.details[0].message,
-				})
-			);
-	}
-
-	if (data.password && data.password != null) {
-		const { error } = passwordValidation({ password: data.password });
-		if (error)
-			return res.send(
-				new response({
-					status: ResponseStatus.ERROR,
-					message: error.details[0].message,
-				})
-			);
+	const { error } = editValidation(data);
+	if (error) {
+		return res.send(
+			new response({
+				status: ResponseStatus.ERROR,
+				message: error.details[0].message,
+			})
+		);
 	}
 
 	try {
