@@ -46,8 +46,8 @@ export const addPto = async (req, res) => {
 
 export const deletePto = async (req, res) => {
 	try {
-		const deleted = await Nurse.findById(req.params.id).orFail();
-		returres.send(new response({ data: deleted }))
+		const deleted = await PTO.findByIdAndDelete(req.params.id).orFail();
+		return res.send(new response({ data: deleted }))
 	} catch (ex) {
 		res.send(new response({ status: ResponseStatus.ERROR, message: "Cannot delete pto", data: ex }))
 	}
