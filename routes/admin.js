@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.route('/').get(auth, AdminController.getAdmin);
 
-router.route('/edit').post(auth, AdminController.editAdmin);
+router.route('/edit').put(auth, AdminController.editAdmin);
+
+router.route('/delete').delete(auth, AdminController.editAdmin);
 
 export default router;

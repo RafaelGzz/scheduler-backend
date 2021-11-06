@@ -10,7 +10,7 @@ router.route('/:id').get(PtoController.getPto);
 
 router.route('/edit/:id').put(auth, PtoController.editPto);
 
-router.route('/add').post(auth, PtoController.addPto);
+router.route('/add').post(PtoController.addPto);
 
 router.route('/delete/:id').delete(auth, PtoController.deletePto);
 
