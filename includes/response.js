@@ -1,4 +1,4 @@
-import { ResponseStatus } from "./status";
+import { ResponseStatus } from "./status.js";
 
 class response {
 	status;

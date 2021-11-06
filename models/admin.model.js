@@ -26,26 +26,6 @@ const adminSchema = new Schema(
 			minlength: 6,
 			maxlength: 255,
 		},
-        requests: {
-            required: false,
-            type: [{
-                nurse_id: {
-                    type: Number,
-                    trim: true,
-                    required: true,
-                },
-				date: {
-                    type: Date,
-                    trim: true,
-					required: true,
-                },
-				status: {
-					type: String,
-					required: true,
-					trim: true
-				}
-            }]
-        }
 	},
 	{
 		timestamps: true,

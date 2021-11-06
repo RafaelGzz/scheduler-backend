@@ -3,7 +3,7 @@ import cors from 'cors';
 import { connect } from './includes/database.js';
 
 import authRouter from './routes/auth.js';
-import accountRouter from './routes/admin.js';
+import adminRouter from './routes/admin.js';
 import tasksRouter from './routes/tasks.js';
 
 const app = express();
@@ -12,8 +12,8 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/user', authRouter);
-app.use('/api/admin', accountRouter)
+app.use('/api/auth', authRouter);
+app.use('/api/admin', adminRouter)
 app.use('/api/tasks', tasksRouter)
 // Database
 connect();

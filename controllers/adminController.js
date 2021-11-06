@@ -1,11 +1,13 @@
 import {
 	registerValidation,
 	passwordValidation,
+	usernameValidation,
 } from "../includes/validation.js";
 import response from "../includes/response.js";
 import Admin from "../models/admin.model.js";
+import { ResponseStatus } from "../includes/status.js";
 
-export const getUser = async (req, res) => {
+export const getAdmin = async (req, res) => {
 	try {
 		const admin = await Admin.findById(req.username)
 		res.send(
@@ -21,49 +23,63 @@ export const getUser = async (req, res) => {
 			})
 		)
 	} catch (err) {
-		res.send(new response({ status: "Error", message: err }))
+		res.send(new response({ status: ResponseStatus.ERROR, message: err }))
 	}
 };
 
-export const editUser = async (req, res) => {
+export const editAdmin = async (req, res) => {
 	const data = req.body;
-	const { error } = registerValidation(data);
 
-	if (error)
-		return res.send(
-			new response({
-				status: "Error",
-				message: error.details[0].message,
-			})
-		);
+	if (data.username && data.username != null) {
+		const { error } = usernameValidation({ username: data.username });
+		if (error)
+			return res.send(
+				new response({
+					status: ResponseStatus.ERROR,
+					message: error.details[0].message,
+				})
+			);
+	}
 
-	if (data.password !== null) {
+	if (data.name && data.name != null) {
+		const { error } = nameValidation({ name: data.name });
+		if (error)
+			return res.send(
+				new response({
+					status: ResponseStatus.ERROR,
+					message: error.details[0].message,
+				})
+			);
+	}
+
+	if (data.password && data.password != null) {
 		const { error } = passwordValidation({ password: data.password });
 		if (error)
 			return res.send(
 				new response({
-					status: "Error",
+					status: ResponseStatus.ERROR,
 					message: error.details[0].message,
 				})
 			);
 	}
 
 	try {
-		let admin = await Admin.findById(req.username)
+		let admin = await Admin.findById(req.username._id)
 		admin.name = data.name ? data.name : admin.name;
 		admin.username = data.username ? data.username : admin.username;
 
-		if (data.password !== null && data.password !== admin.password)
+		if (data.password && data.password != null)
 			admin.password = await admin.encryptPassword(data.password);
 
-		const response = await admin.save()
+		const savedAdmin = await admin.save()
 		return res.send(
 			new response({
-				message: "User edited successfully",
+				message: "Admin edited successfully",
 			})
 		)
-	} catch (err){
-		return res.send(new response({ status: "Error", message: err }))
+	} catch (err) {
+		console.log(err)
+		return res.send(new response({ status: ResponseStatus.ERROR, message: err }))
 	}
 };
 
@@ -88,7 +104,7 @@ export const changeRequestStatus = async (req, res) => {
 		if (!edited)
 			return res.send(
 				new response({
-					status: "Error",
+					status: ResponseStatus.ERROR,
 					message:
 						"No task with id:" + req.params.id + " was found",
 				})
@@ -106,7 +122,7 @@ export const changeRequestStatus = async (req, res) => {
 		// TODO: edit from nurse
 	} catch (err) {
 		res
-			.send(new response({ status: "Error", message: err }))
+			.send(new response({ status: ResponseStatus.ERROR, message: err }))
 	}
 
 }
