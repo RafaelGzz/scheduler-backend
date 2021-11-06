@@ -33,100 +33,47 @@ export const getNurses = async(req, res) => {
 
 export const addNurse = async(req, res) => {
     try {
-        const nurse = await Nurse(req.body);
-        await nurse.save();
+        const a = await Nurse.findOne({ nurse_id: req.body.nurse_id })
+        if (a != null) {
+            res.send(new response({ status: "Error", message: "Duplicate nurse_id" }))
+        } else {
+            const nurse = await Nurse(req.body).orFail();
+            await nurse.save().orFail();
 
-        res.send(new response({ data: nurse }))
+            res.send(new response({ data: nurse }))
+        }
     } catch (ex) {
         res.send(new response({ status: "Error", message: "Cannot add nurse", data: ex }))
     }
 };
 
 export const deleteNurse = async(req, res) => {
-    User.findById(req.username)
-        .then((user) => {
-            const filteredTasks = user.tasks.filter(
-                (val) => val.id !== parseInt(req.params.id)
-            );
-            if (user.tasks.length === filteredTasks.length)
-                return res.send(
-                    new response({
-                        status: "Error",
-                        message: "No task with id:" + req.params.id + " was found",
-                    })
-                );
-            user.tasks = filteredTasks;
+    try {
 
-            user.markModified("tasks");
-            user.save()
-                .then(() =>
-                    res.send(
-                        new response({
-                            message: "Task deleted successfully",
-                        })
-                    )
-                )
-                .catch((err) =>
-                    res
-                    .status(400)
-                    .send(new response({ status: "Error", message: err }))
-                );
-        })
-        .catch((err) =>
-            res
-            .status(400)
-            .send(new response({ status: "Error", message: err }))
-        );
+    } catch (ex) {
+
+    }
 };
 
 export const editNurse = async(req, res) => {
-    const { title, teacher, points, place, date, description } = req.body;
+    try {
 
-    let edited = false;
-    User.findById(req.username)
-        .then((user) => {
-            let tasks = user.tasks;
-            for (let i = 0; i < tasks.length; i++) {
-                if (parseInt(tasks[i].id) === parseInt(req.params.id)) {
-                    tasks[i].title = title;
-                    tasks[i].teacher = teacher;
-                    tasks[i].points = points;
-                    tasks[i].place = place;
-                    tasks[i].date = date;
-                    tasks[i].description = description;
-                    tasks[i].subject = subject;
-                    edited = true;
-                    break;
-                }
-            }
+        await Nurse.findOneAndUpdate({ nurse_id: req.body.nurse_id }, req.body, { useFindAndModify: false })
+        const nurse = await Nurse.findOne({ nurse_id: req.body.nurse_id }).orFail();
 
-            if (!edited)
-                return res.send(
-                    new response({
-                        status: "Error",
-                        message: "No task with id:" + req.params.id + " was found",
-                    })
-                );
+        res.send(new response({ data: nurse }))
 
-            user.tasks = tasks;
-            user.markModified("tasks");
-            user.save()
-                .then(() =>
-                    res.send(
-                        new response({
-                            message: "Task edited successfully",
-                        })
-                    )
-                )
-                .catch((err) =>
-                    res
-                    .status(400)
-                    .send(new response({ status: "Error", message: err }))
-                );
-        })
-        .catch((err) =>
-            res
-            .status(400)
-            .send(new response({ status: "Error", message: err }))
-        );
+    } catch (ex) {
+        res.send(new response({ status: "Error", message: "Cannot edit nurse", data: ex }))
+    }
 };
+
+
+// export function valid(req, res, next) {
+//     const nurse = req.body;
+
+//     if (nurse.nurse_id == null) res.send(new response({ status: "Error", message: "Missing nurse_id", data: nurse }))
+//     else if (nurse.name == null) res.send(new response({ status: "Error", message: "Missing name", data: nurse }))
+//     else if (nurse.work_schedule == null) res.send(new response({ status: "Error", message: "Missing work_schedule", data: nurse }))
+//     else next();
+// };

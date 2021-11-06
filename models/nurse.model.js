@@ -17,20 +17,6 @@ const nurseSchema = new Schema({
         required: false,
         default: 1
     },
-    days_off: {
-        type: [{
-            date: {
-                type: Date,
-                required: true
-            },
-            status: {
-                type: String,
-                required: true
-            }
-        }],
-        required: false,
-        default: []
-    },
     work_schedule: {
         type: {
             start: {
