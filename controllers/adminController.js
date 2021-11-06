@@ -1,7 +1,5 @@
 import {
-	registerValidation,
-	passwordValidation,
-	usernameValidation,
+	editValidation
 } from "../includes/validation.js";
 import response from "../includes/response.js";
 import Admin from "../models/admin.model.js";
@@ -29,38 +27,14 @@ export const getAdmin = async (req, res) => {
 
 export const editAdmin = async (req, res) => {
 	const data = req.body;
-
-	if (data.username && data.username != null) {
-		const { error } = usernameValidation({ username: data.username });
-		if (error)
-			return res.send(
-				new response({
-					status: ResponseStatus.ERROR,
-					message: error.details[0].message,
-				})
-			);
-	}
-
-	if (data.name && data.name != null) {
-		const { error } = nameValidation({ name: data.name });
-		if (error)
-			return res.send(
-				new response({
-					status: ResponseStatus.ERROR,
-					message: error.details[0].message,
-				})
-			);
-	}
-
-	if (data.password && data.password != null) {
-		const { error } = passwordValidation({ password: data.password });
-		if (error)
-			return res.send(
-				new response({
-					status: ResponseStatus.ERROR,
-					message: error.details[0].message,
-				})
-			);
+	const { error } = editValidation(data);
+	if (error) {
+		return res.send(
+			new response({
+				status: ResponseStatus.ERROR,
+				message: error.details[0].message,
+			})
+		);
 	}
 
 	try {
@@ -83,46 +57,11 @@ export const editAdmin = async (req, res) => {
 	}
 };
 
-export const getNurses = async (req, res) => {
-	res.send(new response({ message: "none" }))
-};
-
-export const changeRequestStatus = async (req, res) => {
-	const { status } = req.body;
-
+export const deleteAdmin = async (req, res) => {
 	try {
-		let edited = false
-		let admin = await Admin.findById(req.username);
-		let requests = admin.requests;
-		for (let i = 0; i < requests.lenght; i++) {
-			if (parseInt(requests[i].nurse_id) === parseInt(req.params.id)) {
-				requests[i].status = status;
-				edited = true;
-			}
-		}
-
-		if (!edited)
-			return res.send(
-				new response({
-					status: ResponseStatus.ERROR,
-					message:
-						"No task with id:" + req.params.id + " was found",
-				})
-			);
-
-		admin.requests = requests;
-		admin.markModified("requests");
-		const response = await admin.save();
-		res.send(
-			new response({
-				message: "Request status updated successfully",
-			})
-		)
-
-		// TODO: edit from nurse
-	} catch (err) {
-		res
-			.send(new response({ status: ResponseStatus.ERROR, message: err }))
+		const deletedAdmin = await Admin.findByIdAndDelete(req.body.id).orFail();
+		return res.send(new response({ data: deletedAdmin }))
+	} catch (ex) {
+		return res.send(new response({ status: ResponseStatus.ERROR, message: "Cannot delete admin", data: ex }))
 	}
-
-}
+};
