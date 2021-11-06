@@ -35,10 +35,11 @@ export const addNurse = async(req, res) => {
     try {
         const a = await Nurse.findOne({ nurse_id: req.body.nurse_id })
         if (a != null) {
-            res.send(new response({ status: "Error", message: "Duplicate nurse_id" }))
+            res.send(new response({ status: "Error", message: "Duplicate nurse_id", data: { nurse_id: a.nurse_id, name: a.name } }))
         } else {
-            const nurse = await Nurse(req.body).orFail();
-            await nurse.save().orFail();
+
+            const nurse = await Nurse(req.body);
+            await nurse.save();
 
             res.send(new response({ data: nurse }))
         }
@@ -49,9 +50,10 @@ export const addNurse = async(req, res) => {
 
 export const deleteNurse = async(req, res) => {
     try {
-
+        const deleted = await Nurse.findOneAndDelete({ nurse_id: req.params.id }).orFail();
+        res.send(new response({ data: deleted }))
     } catch (ex) {
-
+        res.send(new response({ status: "Error", message: "Cannot delete nurse", data: ex }))
     }
 };
 
