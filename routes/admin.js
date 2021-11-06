@@ -4,12 +4,12 @@ import { auth } from '../controllers/authController.js'
 
 const router = express.Router();
 
-router.route('/').get(auth, AdminController.getUser);
+router.route('/').get(auth, AdminController.getAdmin);
 
-router.route('/edit').post(auth, AdminController.editUser);
+router.route('/edit').post(auth, AdminController.editAdmin);
 
-router.route('/nurses').get(auth, AdminController.getUsers);
+router.route('/nurses').get(auth, AdminController.getNurses);
 
-router.route('/change-request-status/:id').post(auth, AdminController.editUser);
+router.route('/change-request-status/:id').post(auth, AdminController.changeRequestStatus);
 
 export default router;

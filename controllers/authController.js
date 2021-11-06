@@ -1,62 +1,63 @@
-import User from "../models/user.model.js";
+import Admin from "../models/admin.model.js";
 import { registerValidation, loginValidation } from "../includes/validation.js";
 import jwt from "jsonwebtoken";
+import { ResponseStatus } from "../includes/status.js";
 import response from "../includes/response.js";
 
 export const register = async (req, res) => {
 	const data = req.body;
 	const { error } = registerValidation(data);
-	const newUser = new User();
+	const newAdmin = new Admin();
 
 	if (error)
 		return res.send(
 			new response({
-				status: "Error",
+				status: ResponseStatus.ERROR,
 				message: error.details[0].message,
 			})
 		);
 	try {
-		const existingUser = await User.findOne({ username: data.username });
-		if (existingUser)
+		const existingAdmin = await Admin.findOne({ username: data.username });
+		if (existingAdmin)
 			return res.send(
 				new response({
-					status: "Error",
-					message: "User already exists",
+					status: ResponseStatus.ERROR,
+					message: "Admin already exists",
 				})
 			);
 
-		newUser.username = data.username;
-		newUser.name = data.name;
-		newUser.school = data.school;
-		newUser.score = data.score;
-		newUser.password = await newUser.encryptPassword(data.password);
+		newAdmin.username = data.username;
+		newAdmin.name = data.name;
+		newAdmin.school = data.school;
+		newAdmin.score = data.score;
+		newAdmin.password = await newAdmin.encryptPassword(data.password);
 	} catch (err) {
 		console.log(err);
 		return res.send(
 			new response({
-				status: "Error",
+				status: ResponseStatus.ERROR,
 				message: "Problems while processing",
 			})
 		);
 	}
 
-	newUser
-		.save()
-		.then((savedUser) => {
-			const token = jwt.sign(
-				{ _id: savedUser._id },
-				process.env.TOKEN_SECRET
-			);
-			res.send(
-				new response({
-					message: "User added successfully",
-					data: { token: token },
-				})
-			);
-		})
-		.catch((err) =>
-			res.send(new response({ status: "Error", message: err.errors }))
+	try {
+		const savedAdmin = newAdmin.save()
+		const token = jwt.sign(
+			{ _id: savedAdmin._id },
+			process.env.TOKEN_SECRET
 		);
+
+		res.send(
+			new response({
+				message: "Admin added successfully",
+				data: { token: token },
+			})
+		);
+
+	} catch (err) {
+		res.send(new response({ status: ResponseStatus.ERROR, message: err.errors }))
+	}
 };
 
 export const login = async (req, res) => {
@@ -66,30 +67,30 @@ export const login = async (req, res) => {
 	if (error)
 		return res.send(
 			new response({
-				status: "Error",
+				status: ResponseStatus.ERROR,
 				message: error.details[0].message,
 			})
 		);
 
-	const user = await User.findOne({ username: data.username });
-	if (!user)
+	const admin = await Admin.findOne({ username: data.username });
+	if (!admin)
 		return res.send(
 			new response({
-				status: "Error",
+				status: ResponseStatus.ERROR,
 				message: "Username or Password are wrong",
 			})
 		);
 
-	const validPass = await user.comparePassword(data.password);
+	const validPass = await admin.comparePassword(data.password);
 	if (!validPass)
 		return res.send(
 			new response({
-				status: "Error",
+				status: ResponseStatus.ERROR,
 				message: "Username or Password are wrong",
 			})
 		);
 
-	const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+	const token = jwt.sign({ _id: admin._id }, process.env.TOKEN_SECRET);
 	res.header("auth-token", token).send(
 		new response({
 			message: "User logged in",
@@ -103,7 +104,7 @@ export function auth(req, res, next) {
 	if (!token)
 		return res.status(401).send(
 			new response({
-				status: "Error",
+				status: ResponseStatus.ERROR,
 				message: "Access Denied",
 			})
 		);
@@ -115,7 +116,7 @@ export function auth(req, res, next) {
 	} catch (err) {
 		return res.status(400).send(
 			new response({
-				status: "Error",
+				status: ResponseStatus.ERROR,
 				message: "Invalid Token",
 			})
 		);
