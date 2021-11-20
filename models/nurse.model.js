@@ -17,6 +17,11 @@ const nurseSchema = new Schema({
         required: false,
         default: 1
     },
+    week_hours: {
+        type: Number,
+        required: false,
+        default: 0
+    },
     work_schedule: {
         type: {
             start: {
@@ -30,8 +35,8 @@ const nurseSchema = new Schema({
         },
         required: true
     },
-    work_hours: {
-        type: {
+    work_days: [{
+        work_hours: [{
             start: {
                 type: String,
                 required: true
@@ -39,34 +44,31 @@ const nurseSchema = new Schema({
             end: {
                 type: String,
                 required: true
-            }
-        },
-        required: false,
-        default: {
-
-        }
-    },
-    break_hours: {
-        type: {
-            start: {
-                type: String,
-                required: true
             },
-            end: {
-                type: String,
-                required: true
+            break_time: {
+                type: Number,
+                required: false,
+                default: 0
+            },
+            worked_hours: {
+                type: Number,
+                required: false,
+                default: 0
+            },
+            required: false,
+            default: {
+
             }
+        }],
+        date: {
+            type: Date,
+            required: true,
         },
         required: false,
         default: {
 
         }
-    },
-    total_worked_hours: {
-        type: Number,
-        required: false,
-        default: 0
-    }
+    }]
 }, {
     timestamps: true,
 });
