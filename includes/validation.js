@@ -7,7 +7,7 @@ export const registerValidation = (data) => {
         username: Joi.string().min(3).max(25).required(),
         name: Joi.string().min(3).max(50).required(),
         password: Joi.string().min(6).max(255).required(),
-    });
+    }).required().unknown(true);
 
     return schema.validate(data);
 };
@@ -17,7 +17,7 @@ export const editValidation = (data) => {
         username: Joi.string().min(3).max(25),
         name: Joi.string().min(3).max(50),
         password: Joi.string().min(6).max(255),
-    });
+    }).required().unknown(true);
 
     return schema.validate(data);
 };
@@ -28,7 +28,7 @@ export const passwordValidation = (data) => {
             .min(6)
             .required()
             .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
-    });
+    }).required().unknown(true);
 
     return schema.validate(data);
 };
@@ -39,7 +39,7 @@ export const loginValidation = (data) => {
         password: Joi.string()
             .min(6)
             .required()
-    });
+    }).required().unknown(true);
 
     return schema.validate(data);
 };
@@ -49,7 +49,7 @@ export const ptoEditionValidation = (data) => {
         nurse_id: Joi.string().min(3).max(25).required(),
         date: Joi.date().min(6).required(),
         status: Joi.string().required()
-    });
+    }).required().unknown(true);
 
     return schema.validate(data);
 };
@@ -59,7 +59,7 @@ export const ptoReigisterValidation = (data) => {
         nurse_id: Joi.string().min(3).max(25),
         date: Joi.date().min(6),
         status: Joi.string()
-    });
+    }).required().unknown(true);
 
     return schema.validate(data);
 };
@@ -73,7 +73,7 @@ export function newNurseValidation(req, res, next) {
             start: Joi.string().required(),
             end: Joi.string().required()
         }).required()
-    });
+    }).required().unknown(true);
 
     const { error } = schema.validate(req.body);
     if (!error) next();
